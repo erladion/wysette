@@ -1,6 +1,6 @@
 // The command line's PDF export (see cli.ts): which options it was given.
 //
-//   wysie --export-pdf <folder> [--project <dir>] [--output <file>]
+//   wysette --export-pdf <folder> [--project <dir>] [--output <file>]
 //              [--python <path>] [--fail-on-warning]
 
 import { PRODUCT } from '../shared/product.js';

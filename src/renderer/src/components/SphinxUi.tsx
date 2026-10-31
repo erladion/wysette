@@ -217,7 +217,7 @@ export function SphinxDialog({ state, project, projectId, onChangeEnvironment, o
 
 const ENV_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
-// Environment variables the build gets: the project's (from .wysie.toml, shared
+// Environment variables the build gets: the project's (from .wysette.toml, shared
 // with everyone) and the writer's own (kept in the app, for this folder), which win.
 function EnvVars({ projectId, editing, onEditing }: { projectId: string; editing: boolean; onEditing: (e: boolean) => void }) {
   const [vars, setVars] = useState<{ project: Record<string, string>; yours: Record<string, string> } | null>(null);

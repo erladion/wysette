@@ -360,7 +360,7 @@ export function App() {
   const trustState = Object.values(buildStates).find((st) => st.status.kind === 'needs-trust') ?? sphinx;
   const allWarnings = Object.values(buildStates).flatMap((st) => st.info?.warnings ?? []);
   const anyBuilt = projects.some((p) => builds[p.id]);
-  // Mistakes in .wysie.toml files, once each (a folder-level file applies to every project).
+  // Mistakes in .wysette.toml files, once each (a folder-level file applies to every project).
   const settingsProblems = [ws.project.defaultConfig, ...projects.map((p) => p.config)]
     .flatMap((c) => c.editor.problems)
     .filter((p, i, all) => all.findIndex((q) => q.file === p.file && q.message === p.message) === i);

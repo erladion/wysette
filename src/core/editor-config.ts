@@ -1,4 +1,4 @@
-// Per-project editor settings from `.wysie.toml`: how to present a project's own
+// Per-project editor settings from `.wysette.toml`: how to present a project's own
 // directives and roles, and its conditional-content markers.
 //
 //   [directives.company-callout]
@@ -65,7 +65,7 @@ import { appendToJson, jsonLike } from './json-edit.js';
 // The name new settings files get; a folder's may also have an earlier name (see
 // shared/product.ts).
 export { SETTINGS_FILES, isSettingsFile } from '../shared/product.js';
-export const SETTINGS_FILE = '.wysie.toml';
+export const SETTINGS_FILE = '.wysette.toml';
 
 export type Tone = 'note' | 'info' | 'tip' | 'warning' | 'danger' | 'neutral';
 const TONES: Tone[] = ['note', 'info', 'tip', 'warning', 'danger', 'neutral'];

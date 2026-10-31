@@ -3,10 +3,10 @@
 // working: their settings folders are moved to the app's (see main/previous-names.ts),
 // their settings files are still read, and their command still runs it.
 export const PRODUCT = {
-  name: 'Wysie',
-  command: 'wysie',
+  name: 'Wysette',
+  command: 'wysette',
   // A project's settings, next to its conf.py (or at the top of the opened folder).
-  settingsFile: '.wysie.toml',
+  settingsFile: '.wysette.toml',
   previous: [{ name: 'MyST Editor', command: 'mysteditor', settingsFile: '.mysteditor.toml' }],
 } as const;
 

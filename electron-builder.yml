@@ -1,9 +1,9 @@
 # The app's name (see src/shared/product.ts). It was MyST Editor: the packages replace
 # that one's, and `mysteditor` still runs it.
-appId: io.github.erladion.wysie
-productName: Wysie
-executableName: wysie
-artifactName: Wysie-${version}-${arch}.${ext}
+appId: io.github.erladion.wysette
+productName: Wysette
+executableName: wysette
+artifactName: Wysette-${version}-${arch}.${ext}
 directories:
   output: release
   buildResources: build
@@ -36,8 +36,8 @@ win:
 nsis:
   oneClick: true
   perMachine: false
-  artifactName: Wysie-Setup-${version}.${ext}
-  shortcutName: Wysie
+  artifactName: Wysette-Setup-${version}.${ext}
+  shortcutName: Wysette
 deb:
   # Installed in place of the MyST Editor package, with its command kept.
   afterInstall: build/linux/after-install.tpl

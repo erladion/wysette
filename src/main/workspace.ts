@@ -230,7 +230,7 @@ export function stopWatching() {
   watcher?.close();
 }
 
-// The project folder from the command line (`wysie ./docs`), if given.
+// The project folder from the command line (`wysette ./docs`), if given.
 function folderFromArgs(): string | null {
   const args = process.argv.slice(app.isPackaged ? 1 : 2).filter((a) => !a.startsWith('-'));
   for (const a of args) {

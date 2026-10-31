@@ -163,7 +163,7 @@ export function isBuildInput(name: string): boolean {
   return name.endsWith('.py') || (name.endsWith('.json') && !/^(package(-lock)?|tsconfig|composer)\.json$/.test(name));
 }
 
-// The .wysie.toml files that apply to `dir`, from the opened folder down.
+// The .wysette.toml files that apply to `dir`, from the opened folder down.
 export function settingsSources(root: string, dir: string, read?: Set<string>): SettingsSource[] {
   const dirs = [dir];
   for (let d = dir; d !== root && d.startsWith(root + sep); ) dirs.unshift((d = dirname(d)));

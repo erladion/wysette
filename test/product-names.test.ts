@@ -12,9 +12,9 @@ describe('the settings folder', () => {
     const appData = mkdtempSync(join(tmpdir(), 'appdata-'));
     mkdirSync(join(appData, 'MyST Editor', 'sphinx'), { recursive: true });
     writeFileSync(join(appData, 'MyST Editor', 'settings.json'), '{"recent":["/docs"]}');
-    adoptPreviousSettings(appData, join(appData, 'Wysie'));
-    expect(readFileSync(join(appData, 'Wysie', 'settings.json'), 'utf8')).toBe('{"recent":["/docs"]}');
-    expect(existsSync(join(appData, 'Wysie', 'sphinx'))).toBe(true);
+    adoptPreviousSettings(appData, join(appData, 'Wysette'));
+    expect(readFileSync(join(appData, 'Wysette', 'settings.json'), 'utf8')).toBe('{"recent":["/docs"]}');
+    expect(existsSync(join(appData, 'Wysette', 'sphinx'))).toBe(true);
     expect(lstatSync(join(appData, 'MyST Editor')).isSymbolicLink()).toBe(true);
     // Through the link, the old paths still lead there (environments keep them).
     expect(readFileSync(join(appData, 'MyST Editor', 'settings.json'), 'utf8')).toBe('{"recent":["/docs"]}');
@@ -23,22 +23,22 @@ describe('the settings folder', () => {
   it('left alone once the app has its own', () => {
     const appData = mkdtempSync(join(tmpdir(), 'appdata-'));
     mkdirSync(join(appData, 'MyST Editor'));
-    mkdirSync(join(appData, 'Wysie'));
-    adoptPreviousSettings(appData, join(appData, 'Wysie'));
+    mkdirSync(join(appData, 'Wysette'));
+    adoptPreviousSettings(appData, join(appData, 'Wysette'));
     expect(lstatSync(join(appData, 'MyST Editor')).isDirectory()).toBe(true);
   });
 });
 
 describe('a project’s settings file', () => {
-  it('is .wysie.toml, or .mysteditor.toml, the new name first', () => {
+  it('is .wysette.toml, or .mysteditor.toml, the new name first', () => {
     const root = mkdtempSync(join(tmpdir(), 'names-'));
     mkdirSync(join(root, 'docs'));
     writeFileSync(join(root, '.mysteditor.toml'), '# old\n');
     writeFileSync(join(root, 'docs', '.mysteditor.toml'), '# old\n');
-    writeFileSync(join(root, 'docs', '.wysie.toml'), '# new\n');
+    writeFileSync(join(root, 'docs', '.wysette.toml'), '# new\n');
     expect(settingsSources(root, join(root, 'docs')).map((s) => [s.file, s.text])).toEqual([
       ['.mysteditor.toml', '# old\n'],
-      ['docs/.wysie.toml', '# new\n'],
+      ['docs/.wysette.toml', '# new\n'],
     ]);
   });
 });

@@ -20,7 +20,7 @@ export interface MystConfig {
   substitutions?: Record<string, string>;
   // conf.py's extensions, for the directives they bring (sphinx_design, say).
   sphinxExtensions?: string[];
-  // The project's own directives, roles and conditions, from .wysie.toml.
+  // The project's own directives, roles and conditions, from .wysette.toml.
   editor: EditorConfig;
 }
 
