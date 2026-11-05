@@ -61,27 +61,51 @@ function compare(base: PMNode, now: PMNode, pos: number, inTable: boolean, out: 
       j += part.count!;
       continue;
     }
-    // A run removed and a run added at the same place: paired up one by one where
-    // they're the same kind of block (a paragraph edited), the rest added or removed.
+    // A run removed and a run added at the same place: paired up where they're the
+    // same kind of block, in order (a paragraph edited, a table with a cell changed),
+    // the rest added or removed.
     const removed = part.removed ? part.count! : 0;
     const next = parts[p + 1];
     const added = part.added ? part.count! : part.removed && next?.added ? next.count! : 0;
     if (part.removed && next?.added) p++;
-    // Removed blocks beyond those paired go after the run's new ones.
-    const after = j + added < news.length ? news[j + added].pos : pos + now.content.size;
-    for (let k = 0; k < Math.max(removed, added); k++) {
-      const old = k < removed ? olds[i + k] : null;
-      const cur = k < added ? news[j + k] : null;
-      if (old && cur && sameKind(old, cur.node)) changed(old, cur.node, cur.pos, table, out);
-      else {
-        if (old) out.push({ kind: 'removed-block', at: cur ? cur.pos : after, text: old.textContent, inTable: table });
-        if (cur) out.push({ kind: 'added-block', from: cur.pos, to: cur.pos + cur.node.nodeSize });
+    const pairs = pairUp(olds.slice(i, i + removed), news.slice(j, j + added).map((n) => n.node));
+    // Where a removed block goes: before the next new block of the run, or after the run.
+    const end = j + added < news.length ? news[j + added].pos : pos + now.content.size;
+    let k = 0; // in the run's olds
+    let l = 0; // in its news
+    for (const [a, b] of [...pairs, [removed, added]]) {
+      for (; k < a; k++) out.push({ kind: 'removed-block', at: l < added ? news[j + l].pos : end, text: blockText(olds[i + k]), inTable: table });
+      for (; l < b; l++) out.push({ kind: 'added-block', from: news[j + l].pos, to: news[j + l].pos + news[j + l].node.nodeSize });
+      if (a < removed && b < added) {
+        changed(olds[i + a], news[j + b].node, news[j + b].pos, table, out);
+        k++;
+        l++;
       }
     }
     i += removed;
     j += added;
   }
 }
+
+// The blocks of `olds` and `news` that are versions of one another: the most pairs of
+// the same kind, in order (indexes into each).
+function pairUp(olds: PMNode[], news: PMNode[]): [number, number][] {
+  const best = Array.from({ length: olds.length + 1 }, () => new Array<number>(news.length + 1).fill(0));
+  for (let a = olds.length - 1; a >= 0; a--)
+    for (let b = news.length - 1; b >= 0; b--) best[a][b] = sameKind(olds[a], news[b]) ? best[a + 1][b + 1] + 1 : Math.max(best[a + 1][b], best[a][b + 1]);
+  const out: [number, number][] = [];
+  let a = 0;
+  let b = 0;
+  while (a < olds.length && b < news.length) {
+    if (sameKind(olds[a], news[b]) && best[a][b] === best[a + 1][b + 1] + 1) out.push([a++, b++]);
+    else if (best[a + 1][b] >= best[a][b + 1]) a++;
+    else b++;
+  }
+  return out;
+}
+
+// A removed block's text: its paragraphs, items and cells apart.
+const blockText = (node: PMNode) => (node.isTextblock ? node.textContent : node.textBetween(0, node.content.size, ' ', '▢').replace(/\s+/g, ' ').trim());
 
 // Two versions of the same kind of block.
 function changed(old: PMNode, cur: PMNode, pos: number, inTable: boolean, out: Change[]) {

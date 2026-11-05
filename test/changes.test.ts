@@ -43,4 +43,17 @@ describe('diffDocs', () => {
   it('treats a callout of another kind as removed and added', () => {
     expect(changes(':::{note}\nText.\n:::\n', ':::{warning}\nText.\n:::\n').map(([k]) => k)).toEqual(['removed-block', 'added-block']);
   });
+
+  it('pairs blocks by kind: a paragraph removed before a table, a cell of it changed', () => {
+    const table = '| A | B |\n| - | - |\n| x | y |\n';
+    expect(changes(`# T\n\nGoes away.\n\n${table}`, `# T\n\n${table.replace('| y |', '| z |')}`)).toEqual([
+      ['removed-block', 'Goes away.'],
+      ['removed-text', 'y'],
+      ['added-text', 'z'],
+    ]);
+  });
+
+  it('shows a removed table’s cells apart', () => {
+    expect(changes('# T\n\n| A | B |\n| - | - |\n| x | y |\n', '# T\n')).toEqual([['removed-block', 'A B x y']]);
+  });
 });
