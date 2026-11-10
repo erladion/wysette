@@ -184,7 +184,7 @@ export function mystInserts(ctx: EditorContext): InsertItem[] {
     { id: 'equation', group: 'Blocks', label: 'Equation', palette: 'Equation', command: insertMath(ctx) },
     { id: 'collapsible', group: 'Blocks', label: 'Dropdown', palette: 'Dropdown', command: insertDirective(ctx, 'dropdown', 'Click to expand') },
     { id: 'divider', group: 'Blocks', label: 'Divider', palette: 'Divider', command: insertDivider },
-    { id: 'rubric', group: 'Text', label: 'Rubric…', palette: 'Rubric…', ask: asking('Insert rubric', 'Text', (v) => insertEmptyDirective(ctx, 'rubric', v), { help: 'A heading that isn’t in the contents.' }) },
+    { id: 'rubric', group: 'Text', label: 'Rubric…', palette: 'Rubric…', ask: asking('Insert rubric', 'Heading', (v) => insertEmptyDirective(ctx, 'rubric', v), { help: 'A heading that isn’t a section: not in the contents, nothing nested under it.' }) },
     // Directives of conf.py's extensions.
     ...(uses('sphinx_togglebutton') ? [{ id: 'toggle', group: 'Blocks' as const, label: 'Toggle', palette: 'Toggle', command: insertDirective(ctx, 'toggle') }] : []),
     ...(uses('sphinx_exercise')
@@ -201,12 +201,6 @@ export function mystInserts(ctx: EditorContext): InsertItem[] {
       : []),
     { id: 'topic', group: 'Text', label: 'Topic', command: insertDirective(ctx, 'topic', 'Title') },
     { id: 'sidebar', group: 'Text', label: 'Sidebar', command: insertDirective(ctx, 'sidebar', 'Title') },
-    {
-      id: 'rubric',
-      group: 'Text',
-      label: 'Rubric…',
-      ask: asking('Insert rubric', 'Heading', (v) => insertCard(ctx, 'rubric', v), { help: 'A heading that isn’t a section: not in the contents, nothing nested under it.' }),
-    },
     { id: 'epigraph', group: 'Text', label: 'Epigraph', command: insertDirective(ctx, 'epigraph') },
     { id: 'pull-quote', group: 'Text', label: 'Pull quote', command: insertDirective(ctx, 'pull-quote') },
     { id: 'highlights', group: 'Text', label: 'Highlights', command: insertDirective(ctx, 'highlights') },
