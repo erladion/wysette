@@ -28,16 +28,41 @@ export function asciidocEditor(editor: EditorConfig): EditorConfig {
 }
 
 // The attributes a document's header sets: the entries under its title, up to the
-// first blank line. `:name!:` unsets one (it's left out).
+// first blank line, and its author and revision lines as Asciidoctor reads them
+// (author, email; revnumber, revdate, revremark). `:name!:` unsets one (it's left out).
 export function headerAttributes(text: string): Record<string, string> {
   const out: Record<string, string> = {};
   const lines = text.split(/\r?\n/);
   let k = 0;
   while (k < lines.length && (!lines[k].trim() || /^\/\//.test(lines[k]))) k++;
   if (!/^[=#][ \t]/.test(lines[k] ?? '')) return out;
+  // Right under the title: an author line, then a revision line, if they're there.
+  const plain = (l: string | undefined) => !!l?.trim() && !/^(:|\/\/|ifn?def::|ifeval::|endif::|\[)/.test(l);
+  if (plain(lines[k + 1])) {
+    const author = /^([^<;]*?)\s*(?:<([^>]*)>)?\s*(?:;|$)/.exec(lines[k + 1].trim());
+    if (author?.[1]) out.author = author[1];
+    if (author?.[2]) out.email = author[2];
+    if (plain(lines[k + 2])) Object.assign(out, revision(lines[k + 2].trim()));
+  }
   for (k++; k < lines.length && lines[k].trim(); k++) {
     const m = /^:([\w][\w-]*)(!?):(?:[ \t]+(.*))?$/.exec(lines[k]);
     if (m && !m[2]) out[m[1]] = (m[3] ?? '').trim();
   }
+  return out;
+}
+
+// "v2.4, 2026-01-01: What changed": its number (without the v), date and remark. One
+// part alone is the number when it starts with v or a digit and has no dashes, else the date.
+function revision(line: string): Record<string, string> {
+  const colon = line.indexOf(':');
+  const main = colon >= 0 ? line.slice(0, colon) : line;
+  const out: Record<string, string> = {};
+  if (colon >= 0 && line.slice(colon + 1).trim()) out.revremark = line.slice(colon + 1).trim();
+  const [first, date] = main.split(',').map((p) => p.trim());
+  if (date !== undefined) {
+    if (first) out.revnumber = first.replace(/^[^\d{]*/, '');
+    if (date) out.revdate = date;
+  } else if (/^[vV]?\d[^-/]*$/.test(first)) out.revnumber = first.replace(/^[vV]/, '');
+  else if (first) out.revdate = first;
   return out;
 }
